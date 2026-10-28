@@ -42,7 +42,9 @@ See [PRIVACY.md](PRIVACY.md) and [SECURITY.md](SECURITY.md).
 
 ## Install
 
-Until store listings are published, install from source. You need [Node.js](https://nodejs.org) 20 or newer; there are no other dependencies.
+Store listings are not published yet. Download the Chrome or Firefox package from the [latest release](https://github.com/cngil/volume-tabs/releases/latest) and follow the steps in its notes.
+
+To build from source instead, you need [Node.js](https://nodejs.org) 20 or newer; there are no other dependencies.
 
 ```bash
 git clone https://github.com/cngil/volume-tabs.git
