@@ -132,9 +132,10 @@ svg {
   height: 0;
 }
 
+/* Disabled controls (pages the browser blocks) fade as a whole, selection included. */
 button:disabled,
 input:disabled {
-  color: var(--faint);
+  opacity: 0.45;
   cursor: not-allowed;
 }
 
@@ -196,8 +197,9 @@ input:disabled {
 
 /* ---------- control card ---------- */
 
+/* Both views end 12px above the popup's bottom edge. */
 main {
-  padding: 0 10px;
+  padding: 0 10px 12px;
 }
 
 .card {
@@ -644,7 +646,7 @@ body[data-level='high'] #percent-input {
 /* ---------- playing tabs ---------- */
 
 .tabs-section {
-  padding: 14px 0 2px;
+  padding-top: 14px;
 }
 
 .tabs-section h2,
@@ -734,7 +736,7 @@ body[data-level='high'] #percent-input {
 /* ---------- quiet bottom line: engine note and switch ---------- */
 
 .foot {
-  padding: 4px 25px 12px;
+  padding: 10px 15px 0;
   text-align: center;
 }
 
@@ -766,7 +768,7 @@ body[data-level='high'] #percent-input {
 /* ---------- settings ---------- */
 
 .settings {
-  padding: 0 10px 4px;
+  padding: 0 10px 12px;
 }
 
 .settings-head {
@@ -788,6 +790,10 @@ body[data-level='high'] #percent-input {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: var(--surface);
+}
+
+.setting-group:last-child {
+  margin-bottom: 0;
 }
 
 .settings h3 {
@@ -878,10 +884,6 @@ input[role='switch']:checked {
 
 input[role='switch']:checked::after {
   transform: translateX(14px);
-}
-
-input[role='switch']:disabled {
-  opacity: 0.5;
 }
 
 .about-row {
