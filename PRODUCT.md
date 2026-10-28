@@ -12,7 +12,7 @@ Everyday listeners on laptops and desktops with quiet speakers or headphones: pe
 
 ## Product Purpose
 
-Volume Tabs is a browser extension for Chrome (and Chromium browsers) and Firefox that changes the volume of a single tab from 0% to 500%, with a choice of three sound modes: Default, Voice and Bass. Success means the tab is audibly louder (or quieter) immediately, and the user never has to think about how it works.
+Volume Tabs is a browser extension for Chrome (and Chromium browsers), Firefox and Safari that changes the volume of a single tab from 0% to 500%, with a choice of three sound modes: Default, Voice and Bass. Success means the tab is audibly louder (or quieter) immediately, and the user never has to think about how it works.
 
 ## Positioning
 
@@ -29,7 +29,7 @@ An open-source, dependency-free alternative to closed volume boosters: no data c
 
 - Volume 0 to 500% in 1% steps; presets 50 to 500; mute; reset; per-site restore (stored locally).
 - Sound mode, one at a time: Default (untouched), Voice, Bass. No limiter.
-- Engines: page audio (both browsers) and tab capture (Chrome only). Some media (DRM, cross-origin without CORS) cannot use the page engine; Chrome falls back to capture, Firefox cannot boost it.
+- Engines: page audio (all browsers) and tab capture (Chrome only). Safari is built from source and signed by each user; it has no tab capture. Some media (DRM, cross-origin without CORS) cannot use the page engine; Chrome falls back to capture, Firefox cannot boost it.
 - Settings: light/dark theme, engine choice (Chrome), per-site memory, optional all-sites access (Firefox), shortcuts.
 - UI is localized in English and Turkish.
 - Plain HTML/CSS/JS, no framework, no build-time dependencies, no remote fonts or assets (strict CSP, no network requests).

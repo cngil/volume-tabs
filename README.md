@@ -1,50 +1,102 @@
-# Volume Tabs
+<p align="center">
+  <img src="src/icons/icon-128.png" width="72" height="72" alt="">
+</p>
 
-An open-source browser extension that makes any tab louder, up to **500%**, for **Chrome** and **Firefox**. No tracking, no data collection, no network requests.
+<h1 align="center">Volume Tabs</h1>
 
 <p align="center">
-  <img src="docs/popup-light.png" width="300" alt="Volume Tabs popup, light theme">
-  <img src="docs/popup-dark.png" width="300" alt="Volume Tabs popup, dark theme">
+  Make any browser tab louder, up to 500%.<br>
+  Open source, no tracking, no data collection.
+</p>
+
+<p align="center">
+  <a href="https://github.com/cngil/volume-tabs/releases/latest"><img src="https://img.shields.io/github/v/release/cngil/volume-tabs?label=release&color=2563eb" alt="Latest release"></a>
+  <a href="https://github.com/cngil/volume-tabs/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/cngil/volume-tabs/ci.yml?branch=main&label=CI" alt="CI status"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/cngil/volume-tabs?color=2563eb" alt="MIT license"></a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/cngil/volume-tabs/releases/latest"><b>Download</b></a>
+  &nbsp;·&nbsp;
+  <a href="#install">Install</a>
+  &nbsp;·&nbsp;
+  <a href="#privacy">Privacy</a>
+  &nbsp;·&nbsp;
+  <a href="#how-it-works">How it works</a>
+</p>
+
+<p align="center">
+  <img src="docs/hero.png" width="760" alt="The Volume Tabs popup in light and dark mode: a tab boosted to 250% with Voice mode, and a list of other tabs playing audio">
 </p>
 
 ## Features
 
-- **0% to 500% volume** per tab, in 1% steps: slider, mouse wheel (Shift for 1% steps), arrow keys, or type the number.
-- **Sound modes**: *Default* (untouched), *Voice* for clearer dialogue and podcasts, or *Bass* for music.
-- **Playing tabs list**: every tab that is playing audio, with its boost level. Click one to switch to it.
-- **Per-site memory**: the level you used on a site is saved locally. *Restore* brings it back in one click, *Reset* returns to 100%. Optional automatic restore.
-- **Keyboard shortcuts**: `Alt+Shift+Up` / `Alt+Shift+Down` change the volume by 10%, `Alt+Shift+0` resets it. In the popup: arrow keys, `M` to mute, `0` to reset.
-- **Toolbar badge** shows the current boost of each tab.
-- **Light and dark themes**: follows the system on first use, then a single toggle in the header.
-- **English and Turkish** interface.
+- **0% to 500% volume per tab**, in 1% steps: slider, mouse wheel (hold Shift for 1% steps), arrow keys, or type the number.
+- **Sound modes:** *Default* leaves the sound untouched, *Voice* makes dialogue and podcasts clearer, *Bass* fills out music.
+- **Playing tabs:** every tab that is playing audio, with its level. Click one to jump to it.
+- **Per-site memory:** remembers the level you used on each site. *Restore* brings it back, *Reset* returns to 100%.
+- **Keyboard shortcuts:** `Alt+Shift+Up` / `Alt+Shift+Down` change the volume by 10%, `Alt+Shift+0` resets it. In the popup: arrow keys, `M` to mute, `0` to reset.
+- **Toolbar badge** with the current level of each tab.
+- **Light and dark themes**, in English and Turkish.
 - **Fullscreen keeps working in Chrome** in most cases. See [How it works](#how-it-works).
 
-## Privacy and security
+<details>
+<summary><b>Settings</b></summary>
+<br>
+<p align="center">
+  <img src="docs/settings.png" width="760" alt="The settings view in light and dark mode: audio engine, per-site volume, keyboard shortcuts and about">
+</p>
+</details>
 
-- **No data collection.** No analytics, telemetry, servers or ads. The extension makes **no network requests**.
-- **No remote code**: no `eval`, no CDN, no third-party libraries. There is no bundler or minifier, so the shipped code is exactly the code in `src/`.
-- **Minimal access**: no permanent access to websites. A page is only touched when you open the popup on that tab (`activeTab`), and its content is never read.
+## Browser support
+
+| Browser | Install | Engines |
+| --- | --- | --- |
+| Chrome, Edge, Brave | Download the zip from [Releases](https://github.com/cngil/volume-tabs/releases/latest) | Page audio, with tab capture as fallback |
+| Firefox 128+ | Download the zip from [Releases](https://github.com/cngil/volume-tabs/releases/latest) | Page audio |
+| Safari 16.4+ | [Build and sign it yourself](#safari) | Page audio |
+
+## Privacy
+
+- **No data collection.** No analytics, telemetry, servers or ads, and the extension makes **no network requests**.
+- **No remote code.** No `eval`, no CDN, no third-party libraries. There is no bundler or minifier, so the code you install is exactly the code in [`src/`](src).
+- **Minimal access.** No permanent access to websites. A page is only touched when you open the popup on that tab (`activeTab`), and its content is never read.
 - Saved site levels stay in your browser (`storage.local`) and can be cleared in Settings. Per-tab state is cleared when the browser closes.
-- Strict Content Security Policy and no `web_accessible_resources`, so websites cannot detect or call the extension.
+- A strict Content Security Policy and no `web_accessible_resources`, so websites cannot detect or call the extension.
 
-See [PRIVACY.md](PRIVACY.md) and [SECURITY.md](SECURITY.md).
+More in [PRIVACY.md](PRIVACY.md) and [SECURITY.md](SECURITY.md).
 
-### Permissions
+<details>
+<summary><b>Why each permission is needed</b></summary>
+<br>
 
 | Permission | Why |
 | --- | --- |
 | `activeTab`, `scripting` | Process the audio of the tab you opened the popup on |
 | `tabs` | Titles for the playing tabs list, and the site name for per-site memory |
-| `storage` | Your settings and saved site levels (local only) |
+| `storage` | Your settings and saved site levels, kept locally |
 | `tabCapture`, `offscreen` *(Chrome)* | Fallback for sites where the page's own players cannot be used |
 | `favicon` *(Chrome)* | Show tab icons from Chrome's local cache, without network requests |
-| `<all_urls>` *(Firefox, optional, off by default)* | Only if you enable it in Settings: re-apply the boost after reloads and work inside embedded players |
+| `<all_urls>` *(Firefox, optional, off by default)* | Only if you turn it on in Settings: re-apply the boost after reloads and work inside embedded players |
+
+</details>
 
 ## Install
 
-Store listings are not published yet. Download the Chrome or Firefox package from the [latest release](https://github.com/cngil/volume-tabs/releases/latest) and follow the steps in its notes.
+Store listings are not published yet. Download the package for your browser from the [latest release](https://github.com/cngil/volume-tabs/releases/latest).
 
-To build from source instead, you need [Node.js](https://nodejs.org) 20 or newer; there are no other dependencies.
+**Chrome, Edge, Brave**
+1. Unzip `volume-tabs-chrome-<version>.zip`.
+2. Open `chrome://extensions` and turn on *Developer mode*.
+3. Click *Load unpacked* and select the unzipped folder.
+
+**Firefox**
+1. Open `about:debugging#/runtime/this-firefox`.
+2. Click *Load Temporary Add-on* and select `volume-tabs-firefox-<version>.zip`.
+
+The Firefox package is not signed by Mozilla yet, so Firefox removes it on restart, and opening it directly shows "not verified". For a permanent install, upload it to [addons.mozilla.org](https://addons.mozilla.org/developers/) as an unlisted add-on; Mozilla signs it for free.
+
+**From source:** you need [Node.js](https://nodejs.org) 20 or newer and nothing else.
 
 ```bash
 git clone https://github.com/cngil/volume-tabs.git
@@ -54,36 +106,57 @@ git clone https://github.com/cngil/volume-tabs.git
 cd volume-tabs && npm run build
 ```
 
-**Chrome, Edge, Brave:** open `chrome://extensions`, enable *Developer mode*, click *Load unpacked* and select `dist/chrome`.
+This writes unpacked extensions to `dist/chrome`, `dist/firefox` and `dist/safari`. `npm run package` also writes zip files.
 
-**Firefox:** open `about:debugging#/runtime/this-firefox`, click *Load Temporary Add-on* and select `dist/firefox/manifest.json`. Temporary add-ons are removed when Firefox restarts; a permanent install requires the add-on to be signed by Mozilla (for example as an unlisted add-on on AMO).
+### Safari
 
-`npm run package` writes store-ready zip files to `dist/`.
+Safari extensions ship inside a macOS app, and this project does not publish a signed one, so you build and sign it yourself. You need a Mac with Xcode and Safari 16.4 or newer.
+
+1. Build the extension:
+
+   ```bash
+   npm run build
+   ```
+
+2. Wrap `dist/safari` in an Xcode project, using your own reverse-domain bundle identifier:
+
+   ```bash
+   xcrun safari-web-extension-converter dist/safari --project-location build/safari --app-name "Volume Tabs" --bundle-identifier com.example.volumetabs --macos-only --copy-resources --no-open
+   ```
+
+3. Open `build/safari/Volume Tabs/Volume Tabs.xcodeproj` in Xcode. For both the app target and the extension target, open *Signing & Capabilities* and pick your team (a free Personal Team works for your own Mac). Then choose *Product > Run*.
+4. In Safari, open *Settings > Advanced* and turn on *Show features for web developers*. If Volume Tabs is missing from *Settings > Extensions*, choose *Develop > Allow Unsigned Extensions*. Safari turns this off again when it quits.
+5. Enable Volume Tabs in *Settings > Extensions*, and allow it on the sites you want to control when Safari asks.
+
+Safari support is new and has not been tested on a Mac yet. If something does not work, please [open an issue](https://github.com/cngil/volume-tabs/issues). Sharing the app with other people requires an Apple Developer Program membership.
 
 ## How it works
 
 Audio is processed with the browser's built-in [Web Audio API](https://developer.mozilla.org/docs/Web/API/Web_Audio_API):
-`source -> gain (0-500%) -> bass shelf -> voice filters -> speakers` (the filters stay flat in Default mode)
 
-There are two engines:
+```text
+tab audio -> gain (0-500%) -> bass shelf -> voice filters -> speakers
+```
 
-1. **Page audio** (Chrome and Firefox): the page's `<audio>` and `<video>` elements are routed through the chain. Fullscreen and everything else keep working. DRM-protected media and cross-origin media without CORS would turn silent if routed, so those elements are left untouched.
-2. **Tab capture** (Chrome only): `chrome.tabCapture` captures the whole tab's audio and processes it in an invisible offscreen document. It works on every site, but Chrome keeps fullscreen video inside the window while a tab is captured and shows a capture indicator on the tab. Capture stops by itself a few seconds after the level returns to 100%.
+The filters stay flat in Default mode. There are two ways to get at the audio:
 
-In Chrome's *Automatic* mode, page audio is tried first and tab capture is the fallback. You can force tab capture in Settings, or switch engines for one tab from the popup.
+1. **Page audio** (all browsers): the page's own `<audio>` and `<video>` elements are routed through the chain, so fullscreen and everything else keep working. DRM-protected media and cross-origin media without CORS would turn silent if routed, so those are left untouched.
+2. **Tab capture** (Chrome only): `chrome.tabCapture` captures the whole tab's audio and processes it in a hidden offscreen document. It works on every site, but Chrome keeps fullscreen video inside the window while a tab is captured. Capture stops on its own a few seconds after the level returns to 100%.
 
-**Firefox:** Firefox has no tab capture API, so only the page engine is available. DRM content (for example Netflix or Spotify) and cross-origin media without CORS cannot be boosted. This limitation applies to every extension of this kind on Firefox.
+In Chrome's *Automatic* mode, page audio is tried first and tab capture is the fallback. You can force tab capture in Settings, or switch for a single tab from the line at the bottom of the popup.
+
+Firefox and Safari have no tab capture API, so they use page audio only. DRM content (for example Netflix or Spotify) and cross-origin media without CORS cannot be boosted there. This applies to every extension of this kind on those browsers.
 
 ## Development
 
 ```text
 src/
-  background/   core.js (shared logic), chrome-backend.js, firefox-backend.js, page-host.js
+  background/   core.js (shared logic), chrome-backend.js, page-backend.js, page-host.js
   content/      page-engine.js, injected on demand into the controlled tab
   offscreen/    Chrome tab capture audio processing
   popup/        user interface
   shared/       audio chain, settings, storage
-manifests/      base.json plus per-browser additions
+manifests/      base.json plus Chrome, Firefox and Safari additions
 scripts/        build.mjs (dependency-free build and zip)
 ```
 
@@ -95,9 +168,11 @@ npm test
 npm run lint:firefox
 ```
 
+Releases are published by the [Release workflow](.github/workflows/release.yml): bump the version in `package.json`, add `docs/releases/v<version>.md`, then run the workflow from the Actions tab.
+
 The popup design follows [Impeccable](https://github.com/pbakaus/impeccable): product context lives in [PRODUCT.md](PRODUCT.md) and the visual system in [DESIGN.md](DESIGN.md).
 
-Contributions are welcome. Please do not add dependencies, remote resources or network requests.
+Contributions are welcome. Please keep the project free of dependencies, remote resources and network requests.
 
 ## License
 

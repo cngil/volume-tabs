@@ -284,9 +284,9 @@ A cool neutral grey family carries the whole interface; one saturated blue and o
 
 ## Layout
 
-A single 340px column. The header runs 10px 10px 8px 14px with the brand at left and two 30px icon buttons at right. The main view sits inside a 10px side gutter: one control card (14px padding), then the playing-tab section (14px above) as a scrolling list capped at 200px. The footer centers a shield and the privacy line under everything. Settings replace the main view in place, with a back button and a stack of settings groups 8px apart.
+A single 340px column. The header runs 10px 18px 8px 25px so the brand icon and the settings glyph line up with the card's content edges. The main view sits inside a 10px side gutter: one control card (14px padding), then the playing-tab section (14px above) as a scrolling list capped at 200px, whose heading, favicons and speaker icons share the card's content edges (25px and 315px). When there is an engine note or engine switch, a quiet centered line in `faint` 11px text sits 10px under the list. Both views end 12px above the popup's bottom edge. Settings replace the main view in place, with a back button and a stack of settings groups 8px apart.
 
-Inside the card, the order is fixed by use: tab identity, then the level readout row (mute, numeral, reset), slider with ticks, presets, sound mode, then the optional restore button and status line. Vertical rhythm steps through 8px, 12px and 14px; horizontal gaps through 6px, 8px and 10px. Ticks are inset 9px on each side so their centers sit under the thumb's center at 0% and 600%. There are no breakpoints; the width is the browser popup's.
+Inside the card, the order is fixed by use: tab identity, then the level readout row (mute, numeral, reset), slider with ticks, presets, sound mode, then the optional restore button and status line. Vertical rhythm steps through 8px, 12px and 14px; horizontal gaps through 6px, 8px and 10px. Ticks are inset 9px on each side so their centers sit under the thumb's center at 0% and 500%. There are no breakpoints; the width is the browser popup's.
 
 ## Elevation & Depth
 
@@ -352,7 +352,7 @@ Six equal segments (50, 100, 200, 300, 400, 500) in a `surface-2` track with 3px
 One choice of three, in this order: Default, Voice, Bass (Turkish UI: Normal, Konuşma, Bas). Three equal buttons in a row with 6px gaps, exposed as a radio group (`role="radiogroup"`, arrow keys move the selection): 32px tall, 6px side padding, 1px hairline, transparent, a 14px `muted` icon and label that ellipsizes if a translation runs long. Hover fills `surface-2`. The selected mode (`aria-checked="true"`) drops the border and fills `accent-soft` with `accent-text`. Default leaves the sound untouched; Voice lifts the presence band; Bass adds a low shelf. There is no limiter.
 
 ### Status Line
-An inline callout with a 14px info icon in a `surface-2` box at 8px corners and `muted` label text; the icon turns `warn` or `error` with the severity. When the only content is an engine-switch link, it collapses to a plain link row with no fill and no icon.
+An inline callout with a 14px info icon in a `surface-2` box at 8px corners and `muted` label text; the icon turns `warn` or `error` with the severity. It is used only for problems (a blocked page, an error, a player that cannot be boosted). Engine notes and the engine switch never use it; they live in the quiet bottom line.
 
 ## Do's and Don'ts
 
