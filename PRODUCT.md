@@ -12,7 +12,7 @@ Everyday listeners on laptops and desktops with quiet speakers or headphones: pe
 
 ## Product Purpose
 
-OpenVolume is a browser extension for Chrome (and Chromium browsers) and Firefox that changes the volume of a single tab from 0% to 500%, with a choice of three sound modes: Default, Voice and Bass. Success means the tab is audibly louder (or quieter) immediately, and the user never has to think about how it works.
+Volume Tabs is a browser extension for Chrome (and Chromium browsers) and Firefox that changes the volume of a single tab from 0% to 500%, with a choice of three sound modes: Default, Voice and Bass. Success means the tab is audibly louder (or quieter) immediately, and the user never has to think about how it works.
 
 ## Positioning
 
@@ -23,7 +23,7 @@ An open-source, dependency-free alternative to closed volume boosters: no data c
 - Used from the browser toolbar popup (about 340px wide), opened on the tab that is playing.
 - Typical session: open, drag or type a level (or press a preset), maybe toggle an effect, close. Keyboard shortcuts (Alt+Shift+Up/Down/0) for adjusting without the popup.
 - Secondary jobs: jump to another tab that is playing audio; restore the level last used on a site; reset to 100%.
-- Inspired by the Chrome extension Volume Master, whose users expect quick tab switching; OpenVolume caps the level at 500%.
+- Inspired by the Chrome extension Volume Master, whose users expect quick tab switching; Volume Tabs caps the level at 500%.
 
 ## Capabilities and Constraints
 
@@ -37,7 +37,7 @@ An open-source, dependency-free alternative to closed volume boosters: no data c
 
 ## Brand Commitments
 
-- Name: OpenVolume. Existing toolbar icon in `src/icons/` (speaker with two waves).
+- Name: Volume Tabs. Existing toolbar icon in `src/icons/` (speaker with two waves).
 - Voice: plain and calm; states what happens, never hypes.
 - The user asked for a modest interface with exactly two themes, light and dark: first open follows the OS theme, then a single toggle switches and remembers the choice.
 - Standing preference: a plain, modern, familiar interface with no visual concept or metaphor. Volume Master is the reference for scope and craft level, but the UI must not be a clone of it.

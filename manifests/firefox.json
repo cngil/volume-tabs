@@ -6,7 +6,7 @@
   "optional_host_permissions": ["<all_urls>"],
   "browser_specific_settings": {
     "gecko": {
-      "id": "openvolume@cngil",
+      "id": "volume-tabs@cngil",
       "strict_min_version": "128.0",
       "data_collection_permissions": {
         "required": ["none"]

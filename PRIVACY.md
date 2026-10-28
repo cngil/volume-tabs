@@ -1,6 +1,6 @@
 # Privacy Policy
 
-**In short: OpenVolume does not collect, store or share any personal data.**
+**In short: Volume Tabs does not collect, store or share any personal data.**
 
 - The extension has no servers and makes no network requests. There is no analytics, telemetry, crash reporting or advertising.
 - Audio is processed entirely inside your browser with the Web Audio API. It is never recorded, stored or transmitted.

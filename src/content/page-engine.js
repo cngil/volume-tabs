@@ -4,7 +4,7 @@
 // cannot see or call it, and it never reads or sends page content anywhere.
 (() => {
   'use strict';
-  if (globalThis.__openVolumePage || !globalThis.OpenVolumeAudio) return;
+  if (globalThis.__volumeTabsPage || !globalThis.VolumeTabsAudio) return;
 
   const DEEP_SCAN_INTERVAL = 2000;
   const RESUME_TIMEOUT = 400;
@@ -114,7 +114,7 @@
   async function ensureContext() {
     if (!ctx) {
       ctx = new AudioContext();
-      chain = globalThis.OpenVolumeAudio.createChain(ctx);
+      chain = globalThis.VolumeTabsAudio.createChain(ctx);
       chain.apply(settings, true);
     }
     if (ctx.state !== 'running') {
@@ -149,5 +149,5 @@
     return stats();
   }
 
-  globalThis.__openVolumePage = Object.freeze({ set, stats });
+  globalThis.__volumeTabsPage = Object.freeze({ set, stats });
 })();

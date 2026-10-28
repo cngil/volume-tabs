@@ -4,7 +4,7 @@
 // Classic script (not a module) so it can be injected as a content script too.
 (() => {
   'use strict';
-  if (globalThis.OpenVolumeAudio) return;
+  if (globalThis.VolumeTabsAudio) return;
 
   const BASS = { frequency: 100, gain: 10 };
   const VOICE_CUT = { frequency: 250, Q: 0.9, gain: -3 };
@@ -56,5 +56,5 @@
     return { input, apply, disconnect };
   }
 
-  globalThis.OpenVolumeAudio = Object.freeze({ createChain });
+  globalThis.VolumeTabsAudio = Object.freeze({ createChain });
 })();

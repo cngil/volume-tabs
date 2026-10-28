@@ -1,6 +1,6 @@
 {
   "extName": {
-    "message": "OpenVolume: Ses Yükseltici"
+    "message": "Volume Tabs: Sekme Ses Yükseltici"
   },
   "extDescription": {
     "message": "Herhangi bir sekmenin sesini %500'e kadar yükseltin; bas ve konuşma güçlendirme dahil. Açık kaynak, takip yok, veri toplama yok."
@@ -123,7 +123,7 @@
     "message": "Hakkında"
   },
   "privacyLong": {
-    "message": "OpenVolume tamamen tarayıcınızın içinde çalışır. Sunucusu, analitiği yoktur ve hiçbir ağ isteği yapmaz."
+    "message": "Volume Tabs tamamen tarayıcınızın içinde çalışır. Sunucusu, analitiği yoktur ve hiçbir ağ isteği yapmaz."
   },
   "sourceCode": {
     "message": "Kaynak kodu"

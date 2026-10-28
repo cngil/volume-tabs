@@ -1,6 +1,6 @@
 {
   "extName": {
-    "message": "OpenVolume: Volume Booster",
+    "message": "Volume Tabs: Tab Volume Booster",
     "description": "Extension name shown in the browser and stores"
   },
   "extDescription": {
@@ -124,7 +124,7 @@
     "message": "About"
   },
   "privacyLong": {
-    "message": "OpenVolume works entirely inside your browser. It has no servers, no analytics and makes no network requests."
+    "message": "Volume Tabs works entirely inside your browser. It has no servers, no analytics and makes no network requests."
   },
   "sourceCode": {
     "message": "Source code"

@@ -56,8 +56,8 @@ function aggregate(results) {
   return info.frames > 0 ? info : null;
 }
 
-const setInPage = (settings, neutral) => (globalThis.__openVolumePage ? globalThis.__openVolumePage.set(settings, neutral) : null);
-const statsInPage = () => (globalThis.__openVolumePage ? globalThis.__openVolumePage.stats() : null);
+const setInPage = (settings, neutral) => (globalThis.__volumeTabsPage ? globalThis.__volumeTabsPage.set(settings, neutral) : null);
+const statsInPage = () => (globalThis.__volumeTabsPage ? globalThis.__volumeTabsPage.stats() : null);
 
 export async function applyPage(tabId, settings) {
   const details = { func: setInPage, args: [settings, isNeutral(settings)] };

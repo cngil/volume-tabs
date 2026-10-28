@@ -1,5 +1,5 @@
 ---
-name: OpenVolume
+name: Volume Tabs
 description: A plain, modern per-tab volume popup in two themes, with a neutral grey ground, white or near-black cards and one blue accent.
 colors:
   bg: "#f4f5f7"
@@ -204,13 +204,13 @@ components:
     padding: "7px 12px"
 ---
 
-# Design System: OpenVolume
+# Design System: Volume Tabs
 
 ## Overview
 
 **Creative North Star: "The Category Standard, Played Straight"**
 
-OpenVolume looks like the volume popup people already expect from a well-made browser extension, and nothing more. There is no concept, no metaphor and no ornament: a neutral grey ground, one white (light) or near-black (dark) card that holds every control for the current tab, a row list of other playing tabs below it, and a single blue accent that marks what is filled, toggled, focused or clickable. The craft shows in alignment, contrast and state, not in decoration.
+Volume Tabs looks like the volume popup people already expect from a well-made browser extension, and nothing more. There is no concept, no metaphor and no ornament: a neutral grey ground, one white (light) or near-black (dark) card that holds every control for the current tab, a row list of other playing tabs below it, and a single blue accent that marks what is filled, toggled, focused or clickable. The craft shows in alignment, contrast and state, not in decoration.
 
 The popup is dense and fixed at 340px wide, built for a few seconds of use on a tab that is already playing. The level numeral is the largest thing on screen; every other element is a familiar control (slider, segmented presets, toggle buttons, iOS-style switches, a round mute button) at small product-UI sizes. Exactly two themes exist. The first open follows the operating system, then one header toggle switches and remembers the choice.
 
@@ -270,7 +270,7 @@ A cool neutral grey family carries the whole interface; one saturated blue and o
 ### Hierarchy
 - **Display** (650, 36px, 1.1, -0.02em, tabular): the editable level numeral only, followed by a muted 15px/600 percent sign.
 - **Headline** (650, 15px, 1.4): the settings view title.
-- **Title** (650, 14px, 1.4): the OpenVolume name in the header.
+- **Title** (650, 14px, 1.4): the Volume Tabs name in the header.
 - **Body Strong** (600, 13px, 1.4): the current tab title and settings option names.
 - **Body** (400, 13px, 1.4): default running text.
 - **Label** (600, 12px, 1.4): buttons, presets, sound modes, links, section headings, the status text and tab badges. Playing-tab titles use this size at 500.

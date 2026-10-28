@@ -16,7 +16,7 @@ function scheduleRelease(tabId, session, neutral) {
   session.timer = neutral
     ? setTimeout(() => {
         stop(tabId);
-        chrome.runtime.sendMessage({ type: 'ov:capture-ended', tabId }).catch(() => {});
+        chrome.runtime.sendMessage({ type: 'vt:capture-ended', tabId }).catch(() => {});
       }, RELEASE_DELAY)
     : null;
 }
@@ -41,7 +41,7 @@ async function start({ tabId, streamId, settings, neutral }) {
   const ac = context();
   if (ac.state !== 'running') await ac.resume();
   const source = ac.createMediaStreamSource(stream);
-  const chain = globalThis.OpenVolumeAudio.createChain(ac);
+  const chain = globalThis.VolumeTabsAudio.createChain(ac);
   chain.apply(settings, true);
   source.connect(chain.input);
 
@@ -52,7 +52,7 @@ async function start({ tabId, streamId, settings, neutral }) {
     track.addEventListener('ended', () => {
       if (sessions.get(tabId) !== session) return;
       stop(tabId);
-      chrome.runtime.sendMessage({ type: 'ov:capture-ended', tabId }).catch(() => {});
+      chrome.runtime.sendMessage({ type: 'vt:capture-ended', tabId }).catch(() => {});
     });
   }
   scheduleRelease(tabId, session, neutral);
@@ -68,10 +68,10 @@ function update({ tabId, settings, neutral }) {
 }
 
 const commands = {
-  'ov-offscreen:start': start,
-  'ov-offscreen:update': update,
-  'ov-offscreen:stop': ({ tabId }) => ({ ok: true, stopped: stop(tabId) }),
-  'ov-offscreen:status': () => ({ ok: true, tabs: [...sessions.keys()] }),
+  'vt-offscreen:start': start,
+  'vt-offscreen:update': update,
+  'vt-offscreen:stop': ({ tabId }) => ({ ok: true, stopped: stop(tabId) }),
+  'vt-offscreen:status': () => ({ ok: true, tabs: [...sessions.keys()] }),
 };
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {

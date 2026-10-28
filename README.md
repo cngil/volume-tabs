@@ -1,10 +1,10 @@
-# OpenVolume: Volume Booster
+# Volume Tabs
 
 An open-source browser extension that makes any tab louder, up to **500%**, for **Chrome** and **Firefox**. No tracking, no data collection, no network requests.
 
 <p align="center">
-  <img src="docs/popup-light.png" width="300" alt="OpenVolume popup, light theme">
-  <img src="docs/popup-dark.png" width="300" alt="OpenVolume popup, dark theme">
+  <img src="docs/popup-light.png" width="300" alt="Volume Tabs popup, light theme">
+  <img src="docs/popup-dark.png" width="300" alt="Volume Tabs popup, dark theme">
 </p>
 
 ## Features
@@ -45,11 +45,11 @@ See [PRIVACY.md](PRIVACY.md) and [SECURITY.md](SECURITY.md).
 Until store listings are published, install from source. You need [Node.js](https://nodejs.org) 20 or newer; there are no other dependencies.
 
 ```bash
-git clone https://github.com/cngil/openvolume.git
+git clone https://github.com/cngil/volume-tabs.git
 ```
 
 ```bash
-cd openvolume && npm run build
+cd volume-tabs && npm run build
 ```
 
 **Chrome, Edge, Brave:** open `chrome://extensions`, enable *Developer mode*, click *Load unpacked* and select `dist/chrome`.

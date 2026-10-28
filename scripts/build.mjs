@@ -1,7 +1,7 @@
 // Builds dist/chrome and dist/firefox from src/ (no dependencies, no bundler:
 // the shipped code is exactly the source code, so it is easy to review).
 //   node scripts/build.mjs          -> unpacked folders
-//   node scripts/build.mjs --zip    -> also dist/openvolume-<target>-<version>.zip
+//   node scripts/build.mjs --zip    -> also dist/volume-tabs-<target>-<version>.zip
 import { cpSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, relative, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -129,7 +129,7 @@ for (const target of TARGETS) {
   const out = build(target);
   console.log(`built ${relative(root, out)}`);
   if (wantZip) {
-    const file = join(dist, `openvolume-${target}-${pkg.version}.zip`);
+    const file = join(dist, `volume-tabs-${target}-${pkg.version}.zip`);
     zip(out, file);
     console.log(`packed ${relative(root, file)}`);
   }

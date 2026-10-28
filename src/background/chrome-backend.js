@@ -34,7 +34,7 @@ async function ensureOffscreen() {
 
 async function offscreen(command, payload = {}) {
   if (!(await hasOffscreen())) return null;
-  return chrome.runtime.sendMessage({ type: `ov-offscreen:${command}`, ...payload });
+  return chrome.runtime.sendMessage({ type: `vt-offscreen:${command}`, ...payload });
 }
 
 async function capturedTabs() {
@@ -72,7 +72,7 @@ export const chromeBackend = {
   init({ engineEnded }) {
     chrome.runtime.onMessage.addListener((message, sender) => {
       if (sender.id !== chrome.runtime.id || sender.url !== OFFSCREEN_URL) return false;
-      if (message?.type === 'ov:capture-ended' && Number.isInteger(message.tabId)) {
+      if (message?.type === 'vt:capture-ended' && Number.isInteger(message.tabId)) {
         engineEnded(message.tabId, 'capture').then(closeOffscreenIfIdle);
       }
       return false;

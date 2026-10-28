@@ -1,10 +1,10 @@
 {
   "manifest_version": 3,
   "name": "__MSG_extName__",
-  "short_name": "OpenVolume",
+  "short_name": "Volume Tabs",
   "description": "__MSG_extDescription__",
   "default_locale": "en",
-  "homepage_url": "https://github.com/cngil/openvolume",
+  "homepage_url": "https://github.com/cngil/volume-tabs",
   "icons": {
     "16": "icons/icon-16.png",
     "32": "icons/icon-32.png",

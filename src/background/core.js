@@ -87,7 +87,7 @@ export function startBackground(backend) {
   const handlers = {
     // The popup opened: report the tab's state. If the tab should be boosted but
     // is not (e.g. it was reloaded), opening the popup grants access again, so re-apply.
-    'ov:get': ({ tabId }) =>
+    'vt:get': ({ tabId }) =>
       serial(tabId, async () => {
         const record = await loadRecord(tabId);
         if (!isNeutral(record.settings) && record.engine === null) return commit(tabId, record);
@@ -100,7 +100,7 @@ export function startBackground(backend) {
         return view(record, { info: info || null });
       }),
 
-    'ov:set': ({ tabId, settings, forceCapture }) =>
+    'vt:set': ({ tabId, settings, forceCapture }) =>
       serial(tabId, async () => {
         const record = await loadRecord(tabId);
         record.settings = sanitizeSettings(settings, record.settings);
@@ -113,7 +113,7 @@ export function startBackground(backend) {
         return commit(tabId, record);
       }),
 
-    'ov:reset': ({ tabId }) =>
+    'vt:reset': ({ tabId }) =>
       serial(tabId, async () => {
         const record = await loadRecord(tabId);
         await backend.release(tabId, record);
@@ -124,7 +124,7 @@ export function startBackground(backend) {
       }),
 
     // Used by the popup's tab list.
-    'ov:list': async () => {
+    'vt:list': async () => {
       const all = await api.storage.session.get(null);
       const tabs = {};
       for (const [key, value] of Object.entries(all)) {
@@ -140,7 +140,7 @@ export function startBackground(backend) {
     if (sender.id !== api.runtime.id || !String(sender.url ?? '').startsWith(EXT_ORIGIN)) return false;
     const handler = handlers[message?.type];
     if (!handler) return false;
-    if (message.type !== 'ov:list' && !isTabId(message.tabId)) {
+    if (message.type !== 'vt:list' && !isTabId(message.tabId)) {
       sendResponse({ ok: false, error: 'error', detail: 'invalid tab' });
       return false;
     }
@@ -155,7 +155,7 @@ export function startBackground(backend) {
     tab ??= (await api.tabs.query({ active: true, lastFocusedWindow: true }))[0];
     if (!isTabId(tab?.id)) return;
     if (command === 'volume-reset') {
-      await handlers['ov:reset']({ tabId: tab.id });
+      await handlers['vt:reset']({ tabId: tab.id });
       return;
     }
     await serial(tab.id, async () => {
