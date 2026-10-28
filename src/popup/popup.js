@@ -12,7 +12,7 @@ import {
 } from '../shared/settings.js';
 import { clearSites, getPrefs, getSite, rememberSite, setPrefs } from '../shared/storage.js';
 
-const SOURCE_URL = 'https://github.com/cngil/openvolume';
+const SOURCE_URL = 'https://github.com/cngil/volume-tabs';
 const SEND_INTERVAL = 40; // ms between live updates while dragging
 const ALL_SITES = { origins: ['<all_urls>'] };
 
@@ -30,6 +30,8 @@ const ui = {
   status: $('status'),
   statusText: $('status-text'),
   switchEngine: $('switch-engine'),
+  foot: $('foot'),
+  footNote: $('foot-note'),
   favicon: $('current-favicon'),
   title: $('current-title'),
   host: $('current-host'),
@@ -108,6 +110,17 @@ function fillFavicon(holder, tab) {
 
 // ---------------------------------------------------------------- rendering
 
+// The readout is exactly as wide as its digits, so the % sign always follows the number.
+const readoutMeasure = document.createElement('span');
+readoutMeasure.className = 'readout-measure';
+readoutMeasure.setAttribute('aria-hidden', 'true');
+ui.input.after(readoutMeasure);
+
+function fitReadout() {
+  readoutMeasure.textContent = ui.input.value || '0';
+  ui.input.style.width = `${Math.ceil(readoutMeasure.getBoundingClientRect().width) + 1}px`;
+}
+
 function render() {
   const { settings, restricted } = state;
   const { percent } = settings;
@@ -118,6 +131,7 @@ function render() {
   ui.slider.value = String(percent);
   ui.slider.style.setProperty('--pos', `${(percent / MAX_PERCENT) * 100}%`);
   if (document.activeElement !== ui.input) ui.input.value = String(percent);
+  fitReadout();
   ui.mute.title = t(percent === 0 ? 'unmute' : 'mute');
   ui.mute.setAttribute('aria-label', ui.mute.title);
 
@@ -147,9 +161,11 @@ const ERROR_TEXT = {
   'capture-failed': 'statusCaptureFailed',
 };
 
+// Problems show in the card; engine notes and the engine switch sit quietly at the bottom.
 function renderStatus() {
   let key = null;
   let tone = '';
+  let note = null;
   let switchTo = null;
 
   if (state.restricted) {
@@ -170,14 +186,17 @@ function renderStatus() {
     }
     if (!IS_FIREFOX) switchTo = 'capture';
   } else if (state.engine === 'capture') {
-    key = 'statusFullscreen';
+    note = 'statusFullscreen';
     if (state.forceCapture && state.prefs?.engine === 'auto') switchTo = 'page';
   }
 
-  ui.status.hidden = !key && !switchTo;
-  ui.status.className = `status ${key ? tone : 'plain'}`.trim();
+  ui.status.hidden = !key;
+  ui.status.className = `status ${tone}`.trim();
   ui.statusText.textContent = key ? t(key) : '';
-  ui.statusText.hidden = !key;
+
+  ui.foot.hidden = !note && !switchTo;
+  ui.footNote.hidden = !note;
+  ui.footNote.textContent = note ? t(note) : '';
   ui.switchEngine.hidden = !switchTo;
   if (switchTo) {
     ui.switchEngine.textContent = t(switchTo === 'capture' ? 'useCapture' : 'usePage');
@@ -204,7 +223,7 @@ let lastSend = 0;
 async function push(extra = {}) {
   if (!state.tab || state.restricted) return;
   const seq = ++state.seq;
-  const response = await send({ type: 'ov:set', tabId: state.tab.id, settings: state.settings, ...extra });
+  const response = await send({ type: 'vt:set', tabId: state.tab.id, settings: state.settings, ...extra });
   // Ignore answers to requests that a newer one has already replaced.
   if (seq === state.seq) applyResponse(response);
 }
@@ -246,7 +265,7 @@ function change(patch, { live = false } = {}) {
 // ---------------------------------------------------------------- tab list
 
 async function renderTabs() {
-  const [audible, list] = await Promise.all([api.tabs.query({ audible: true }), send({ type: 'ov:list' })]);
+  const [audible, list] = await Promise.all([api.tabs.query({ audible: true }), send({ type: 'vt:list' })]);
   const boosted = list?.tabs ?? {};
   const ids = new Set([...audible.map((tab) => tab.id), ...Object.keys(boosted).map(Number)]);
   ids.delete(state.tab?.id);
@@ -328,7 +347,7 @@ function applyTheme() {
   else delete root.dataset.theme;
   root.dataset.effectiveTheme = effectiveTheme();
   try {
-    localStorage.setItem('ov-theme', theme ?? 'auto');
+    localStorage.setItem('vt-theme', theme ?? 'auto');
   } catch {
     // ignore
   }
@@ -402,6 +421,7 @@ function wireControls() {
   ui.input.addEventListener('focus', () => ui.input.select());
   ui.input.addEventListener('input', () => {
     ui.input.value = ui.input.value.replace(/\D/g, '');
+    fitReadout();
   });
   ui.input.addEventListener('change', () => change({ percent: clampPercent(ui.input.value || 0) }));
   ui.input.addEventListener('keydown', (e) => {
@@ -413,9 +433,13 @@ function wireControls() {
       const step = e.shiftKey ? 10 : 1;
       change({ percent: state.settings.percent + (e.key === 'ArrowUp' ? step : -step) });
       ui.input.value = String(state.settings.percent);
+      fitReadout();
     }
   });
-  ui.input.addEventListener('blur', () => (ui.input.value = String(state.settings.percent)));
+  ui.input.addEventListener('blur', () => {
+    ui.input.value = String(state.settings.percent);
+    fitReadout();
+  });
 
   // Mouse wheel anywhere on the card: 5% steps, 1% with Shift.
   $('control-card').addEventListener(
@@ -450,7 +474,7 @@ function wireControls() {
     clearTimeout(pending);
     pending = null;
     const seq = ++state.seq;
-    const response = await send({ type: 'ov:reset', tabId: state.tab.id });
+    const response = await send({ type: 'vt:reset', tabId: state.tab.id });
     if (seq === state.seq) applyResponse(response);
   });
 
@@ -484,7 +508,7 @@ async function init() {
     ui.host.textContent = state.host ?? t('thisTab');
     fillFavicon(ui.favicon, tab);
     state.saved = await getSite(state.host);
-    if (!state.restricted) applyResponse(await send({ type: 'ov:get', tabId: tab.id }));
+    if (!state.restricted) applyResponse(await send({ type: 'vt:get', tabId: tab.id }));
 
     const untouched = isNeutral(state.settings) && !state.engine && !state.error;
     if (!state.restricted && prefs.rememberSites && prefs.autoRestore && state.saved && untouched) {

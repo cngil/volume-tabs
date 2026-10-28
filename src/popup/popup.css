@@ -1,4 +1,4 @@
-/* OpenVolume popup. Plain, modern product UI: neutral surfaces, one blue accent,
+/* Volume Tabs popup. Plain, modern product UI: neutral surfaces, one blue accent,
    system type. Two themes; until the user picks one, the system theme is used. */
 
 :root {
@@ -144,7 +144,7 @@ input:disabled {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 10px 8px 14px;
+  padding: 10px 18px 8px 25px;
 }
 
 .brand {
@@ -319,17 +319,28 @@ body.muted .mute-btn {
   cursor: text;
 }
 
+#percent-input,
+.readout-measure {
+  font: 650 36px/1.1 system-ui, -apple-system, 'Segoe UI', Roboto, Ubuntu, Cantarell, sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+
 #percent-input {
-  width: 3.1ch;
+  width: 3ch;
   padding: 0;
   border: 0;
   border-radius: 7px;
   background: transparent;
   color: var(--text);
-  font: 650 36px/1.1 system-ui, -apple-system, 'Segoe UI', Roboto, Ubuntu, Cantarell, sans-serif;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -0.02em;
-  text-align: right;
+  text-align: left;
+}
+
+/* Invisible copy of the readout text, used to size the input to its digits. */
+.readout-measure {
+  position: absolute;
+  visibility: hidden;
+  white-space: pre;
+  pointer-events: none;
 }
 
 body[data-level='high'] #percent-input {
@@ -598,16 +609,6 @@ body[data-level='high'] #percent-input {
   margin: 0;
 }
 
-/* Only the engine switch to offer: a plain link row, not a callout. */
-.status.plain {
-  padding: 0 2px;
-  background: none;
-}
-
-.status.plain svg {
-  display: none;
-}
-
 .status.warn svg {
   color: var(--warn);
 }
@@ -648,7 +649,7 @@ body[data-level='high'] #percent-input {
 
 .tabs-section h2,
 .settings h3 {
-  margin: 0 0 6px 4px;
+  margin: 0 0 6px 15px;
   color: var(--muted);
   font-size: 12px;
   font-weight: 600;
@@ -667,8 +668,8 @@ body[data-level='high'] #percent-input {
   align-items: center;
   gap: 10px;
   width: 100%;
-  padding: 7px 8px;
-  border: 0;
+  padding: 7px 14px;
+  border: 1px solid transparent;
   border-radius: 10px;
   background: transparent;
   text-align: left;
@@ -725,9 +726,41 @@ body[data-level='high'] #percent-input {
 }
 
 .empty {
-  margin: 0 0 0 4px;
+  margin: 0 0 0 15px;
   color: var(--muted);
   font-size: 12px;
+}
+
+/* ---------- quiet bottom line: engine note and switch ---------- */
+
+.foot {
+  padding: 4px 25px 12px;
+  text-align: center;
+}
+
+.foot-note {
+  margin: 0 0 2px;
+  color: var(--faint);
+  font-size: 11px;
+}
+
+.foot-link {
+  padding: 2px 4px;
+  border: 0;
+  border-radius: 7px;
+  background: none;
+  color: var(--faint);
+  font-size: 11px;
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 2px;
+  transition: color 150ms ease-out, text-decoration-color 150ms ease-out;
+}
+
+.foot-link:hover {
+  color: var(--muted);
+  text-decoration-color: currentColor;
 }
 
 /* ---------- settings ---------- */

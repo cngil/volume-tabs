@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="color-scheme" content="light dark" />
-    <title>OpenVolume</title>
+    <title>Volume Tabs</title>
     <script src="theme-boot.js"></script>
     <link rel="stylesheet" href="popup.css" />
     <script type="module" src="popup.js"></script>
@@ -29,7 +29,7 @@
     <header class="topbar">
       <div class="brand">
         <img src="../icons/icon-32.png" alt="" width="22" height="22" />
-        <span>OpenVolume</span>
+        <span>Volume Tabs</span>
       </div>
       <div class="top-actions">
         <button id="theme-toggle" class="icon-btn" type="button">
@@ -103,10 +103,7 @@
 
         <div id="status" class="status" role="status" hidden>
           <svg><use href="#i-info" /></svg>
-          <div>
-            <p id="status-text"></p>
-            <button id="switch-engine" class="link-btn" type="button" hidden></button>
-          </div>
+          <p id="status-text"></p>
         </div>
       </section>
 
@@ -115,6 +112,11 @@
         <ul id="tab-list" class="tab-list"></ul>
         <p id="no-tabs" class="empty" data-i18n="noPlaying" hidden></p>
       </section>
+
+      <div id="foot" class="foot" hidden>
+        <p id="foot-note" class="foot-note" hidden></p>
+        <button id="switch-engine" class="foot-link" type="button" hidden></button>
+      </div>
     </main>
 
     <section id="settings-view" class="settings" hidden>
