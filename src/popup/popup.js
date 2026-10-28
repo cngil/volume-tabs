@@ -85,11 +85,21 @@ function openTab(url) {
   window.close();
 }
 
+// The main name of a host, for letter icons: open.spotify.com -> spotify, bbc.co.uk -> bbc.
+function siteName(host) {
+  if (!host) return null;
+  if (/^[\d.]+$/.test(host) || host.includes(':')) return host; // IP address
+  const labels = host.split('.');
+  if (labels.length < 2) return host;
+  const second = labels[labels.length - 2];
+  return labels.length > 2 && second.length <= 3 ? labels[labels.length - 3] : second;
+}
+
 // Favicons: Chrome serves cached ones from its own _favicon endpoint (no network);
 // Firefox and Safari give us the tab's favicon URL. Falls back to the first letter.
 function fillFavicon(holder, tab) {
   holder.replaceChildren();
-  const letter = (siteKey(tab.url) ?? tab.title ?? '?').replace(/^www\./, '').charAt(0) || '?';
+  const letter = (siteName(siteKey(tab.url)) ?? tab.title ?? '?').charAt(0) || '?';
   let src = null;
   if (FEATURES.chromeFavicons && /^https?:/.test(tab.url ?? '')) {
     src = `${api.runtime.getURL('/_favicon/')}?pageUrl=${encodeURIComponent(tab.url)}&size=32`;

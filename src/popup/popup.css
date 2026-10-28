@@ -892,7 +892,8 @@ input[role='switch']:checked::after {
   justify-content: space-between;
 }
 
-.about-row .link-btn {
+.about-row .link-btn,
+.about-row .hint {
   margin: 0;
 }
 
