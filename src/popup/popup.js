@@ -1,4 +1,4 @@
-import { api, IS_FIREFOX } from '../shared/api.js';
+import { api, BROWSER, FEATURES } from '../shared/api.js';
 import {
   MAX_PERCENT,
   NEUTRAL,
@@ -86,12 +86,12 @@ function openTab(url) {
 }
 
 // Favicons: Chrome serves cached ones from its own _favicon endpoint (no network);
-// Firefox gives us the tab's favicon URL. Falls back to the first letter.
+// Firefox and Safari give us the tab's favicon URL. Falls back to the first letter.
 function fillFavicon(holder, tab) {
   holder.replaceChildren();
   const letter = (siteKey(tab.url) ?? tab.title ?? '?').replace(/^www\./, '').charAt(0) || '?';
   let src = null;
-  if (!IS_FIREFOX && /^https?:/.test(tab.url ?? '')) {
+  if (FEATURES.chromeFavicons && /^https?:/.test(tab.url ?? '')) {
     src = `${api.runtime.getURL('/_favicon/')}?pageUrl=${encodeURIComponent(tab.url)}&size=32`;
   } else if (/^(data:image\/|https:)/.test(tab.favIconUrl ?? '')) {
     src = tab.favIconUrl;
@@ -184,7 +184,7 @@ function renderStatus() {
     } else if (info && info.media === 0) {
       key = 'statusNoMedia';
     }
-    if (!IS_FIREFOX) switchTo = 'capture';
+    if (FEATURES.capture) switchTo = 'capture';
   } else if (state.engine === 'capture') {
     note = 'statusFullscreen';
     if (state.forceCapture && state.prefs?.engine === 'auto') switchTo = 'page';
@@ -359,13 +359,15 @@ function applyTheme() {
 async function renderSettings() {
   const { prefs } = state;
   applyTheme();
-  $('engine-group').hidden = IS_FIREFOX;
+  $('engine-group').hidden = !FEATURES.capture;
   for (const radio of document.querySelectorAll('input[name="engine"]')) radio.checked = radio.value === prefs.engine;
   $('pref-remember').checked = prefs.rememberSites;
   $('pref-autorestore').checked = prefs.autoRestore;
   $('pref-autorestore').disabled = !prefs.rememberSites;
-  $('access-group').hidden = !IS_FIREFOX;
-  if (IS_FIREFOX) $('pref-allsites').checked = await api.permissions.contains(ALL_SITES);
+  $('access-group').hidden = !FEATURES.optionalHostAccess;
+  if (FEATURES.optionalHostAccess) $('pref-allsites').checked = await api.permissions.contains(ALL_SITES);
+  // Safari has no page for editing extension shortcuts.
+  $('edit-shortcuts').hidden = BROWSER === 'safari';
   $('version').textContent = t('version', [api.runtime.getManifest().version]);
 }
 
@@ -405,7 +407,7 @@ function wireSettings() {
     request.finally(renderSettings);
   });
   $('edit-shortcuts').addEventListener('click', () => {
-    if (!IS_FIREFOX) return openTab('chrome://extensions/shortcuts');
+    if (BROWSER === 'chrome') return openTab('chrome://extensions/shortcuts');
     if (api.commands.openShortcutSettings) return api.commands.openShortcutSettings();
     $('shortcuts-firefox').hidden = false;
   });

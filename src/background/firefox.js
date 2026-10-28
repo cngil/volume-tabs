@@ -1,4 +1,4 @@
 import { startBackground } from './core.js';
-import { firefoxBackend } from './firefox-backend.js';
+import { pageBackend } from './page-backend.js';
 
-startBackground(firefoxBackend);
+startBackground(pageBackend);

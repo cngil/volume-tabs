@@ -28,6 +28,22 @@ test('firefox build', () => {
   assert.ok(!existsSync(join(root, 'dist/firefox/background/chrome.js')));
 });
 
+test('safari build', () => {
+  const m = manifest('safari');
+  assert.equal(m.background.service_worker, 'background/safari.js');
+  assert.ok(!m.permissions.includes('tabCapture'));
+  assert.ok(!('browser_specific_settings' in m && 'gecko' in m.browser_specific_settings));
+  assert.ok(existsSync(join(root, 'dist/safari/background/page-backend.js')));
+  assert.ok(!existsSync(join(root, 'dist/safari/offscreen')));
+  assert.ok(!existsSync(join(root, 'dist/safari/background/firefox.js')));
+});
+
+test('firefox build ships the shared page backend', () => {
+  assert.ok(existsSync(join(root, 'dist/firefox/background/page-backend.js')));
+  assert.ok(!existsSync(join(root, 'dist/firefox/background/safari.js')));
+  assert.ok(!existsSync(join(root, 'dist/chrome/background/page-backend.js')));
+});
+
 test('no remote code or network calls in shipped files', () => {
   const files = execFileSync('find', [join(root, 'src'), '-name', '*.js', '-o', '-name', '*.html'], { encoding: 'utf8' })
     .trim()

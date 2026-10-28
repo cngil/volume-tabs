@@ -1,0 +1,11 @@
+{
+  "background": {
+    "service_worker": "background/safari.js",
+    "type": "module"
+  },
+  "browser_specific_settings": {
+    "safari": {
+      "strict_min_version": "16.4"
+    }
+  }
+}

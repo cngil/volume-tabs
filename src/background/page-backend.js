@@ -1,8 +1,8 @@
-// Firefox backend. Firefox has no tabCapture API, so only the page engine is used.
+// Backend for browsers without tabCapture (Firefox, Safari): only the page engine is used.
 import { isNeutral } from '../shared/settings.js';
 import { applyPage, forgetTab, neutralizePage, probePage } from './page-host.js';
 
-export const firefoxBackend = {
+export const pageBackend = {
   async apply(tabId, record) {
     const neutral = isNeutral(record.settings);
     if (neutral && record.engine === null) return { engine: null, info: null };

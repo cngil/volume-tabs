@@ -1,4 +1,4 @@
-// Builds dist/chrome and dist/firefox from src/ (no dependencies, no bundler:
+// Builds dist/chrome, dist/firefox and dist/safari from src/ (no dependencies, no bundler:
 // the shipped code is exactly the source code, so it is easy to review).
 //   node scripts/build.mjs          -> unpacked folders
 //   node scripts/build.mjs --zip    -> also dist/volume-tabs-<target>-<version>.zip
@@ -13,12 +13,13 @@ const dist = join(root, 'dist');
 const pkg = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'));
 const readJson = (file) => JSON.parse(readFileSync(join(root, file), 'utf8'));
 
-// Files that only one browser needs.
-const ONLY = {
+// Files only some browsers need. A file listed here ships only to the targets that list it.
+const OWN = {
   chrome: ['background/chrome.js', 'background/chrome-backend.js', 'offscreen'],
-  firefox: ['background/firefox.js', 'background/firefox-backend.js'],
+  firefox: ['background/firefox.js', 'background/page-backend.js'],
+  safari: ['background/safari.js', 'background/page-backend.js'],
 };
-const TARGETS = Object.keys(ONLY);
+const TARGETS = Object.keys(OWN);
 
 function manifestFor(target) {
   const base = readJson('manifests/base.json');
@@ -29,7 +30,8 @@ function manifestFor(target) {
 }
 
 function excludedFor(target) {
-  return TARGETS.filter((other) => other !== target).flatMap((other) => ONLY[other]);
+  const others = TARGETS.filter((other) => other !== target).flatMap((other) => OWN[other]);
+  return others.filter((path) => !OWN[target].includes(path));
 }
 
 function build(target) {

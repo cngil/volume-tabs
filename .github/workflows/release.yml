@@ -39,7 +39,8 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "$TAG" dist/*.zip \
+          # Safari is built and signed by each user, so only Chrome and Firefox are attached.
+          gh release create "$TAG" dist/volume-tabs-chrome-*.zip dist/volume-tabs-firefox-*.zip \
             --target "$GITHUB_SHA" \
             --title "Volume Tabs $TAG" \
             --notes-file "docs/releases/$TAG.md"

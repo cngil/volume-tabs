@@ -1,6 +1,6 @@
 // Browser-independent background logic: per-tab state, messaging with the popup,
 // keyboard shortcuts and the toolbar badge. The actual audio work is done by a
-// backend (chrome-backend.js or firefox-backend.js).
+// backend (chrome-backend.js or page-backend.js).
 import { api } from '../shared/api.js';
 import { NEUTRAL, STEP_PERCENT, clampPercent, isNeutral, levelOf, sanitizeSettings, siteKey } from '../shared/settings.js';
 import { getPrefs, rememberSite } from '../shared/storage.js';
@@ -10,13 +10,23 @@ const ENGINES = new Set(['page', 'capture']);
 const BADGE_COLORS = { normal: '#16a34a', boost: '#d97706', high: '#dc2626' };
 
 const recordKey = (tabId) => `tab:${tabId}`;
+
+// Older Safari versions lack storage.session; fall back to storage.local and
+// clear the per-tab records on browser start so they still behave like a session.
+const sessionArea = api.storage.session ?? api.storage.local;
+if (!api.storage.session) {
+  api.runtime.onStartup.addListener(async () => {
+    const keys = Object.keys(await sessionArea.get(null)).filter((key) => key.startsWith('tab:'));
+    await sessionArea.remove(keys);
+  });
+}
 const isTabId = (v) => Number.isInteger(v) && v >= 0;
 
-// Per-tab state lives in storage.session: survives service-worker restarts,
+// Per-tab state lives in session storage: survives service-worker restarts,
 // cleared when the browser closes, never written to disk.
 async function loadRecord(tabId) {
   const key = recordKey(tabId);
-  const stored = (await api.storage.session.get(key))[key];
+  const stored = (await sessionArea.get(key))[key];
   return {
     settings: sanitizeSettings(stored?.settings),
     engine: ENGINES.has(stored?.engine) ? stored.engine : null,
@@ -27,9 +37,9 @@ async function loadRecord(tabId) {
 async function saveRecord(tabId, record) {
   const { settings, engine, forceCapture } = record;
   if (isNeutral(settings) && !engine && !forceCapture) {
-    await api.storage.session.remove(recordKey(tabId));
+    await sessionArea.remove(recordKey(tabId));
   } else {
-    await api.storage.session.set({ [recordKey(tabId)]: { settings, engine, forceCapture } });
+    await sessionArea.set({ [recordKey(tabId)]: { settings, engine, forceCapture } });
   }
 }
 
@@ -125,7 +135,7 @@ export function startBackground(backend) {
 
     // Used by the popup's tab list.
     'vt:list': async () => {
-      const all = await api.storage.session.get(null);
+      const all = await sessionArea.get(null);
       const tabs = {};
       for (const [key, value] of Object.entries(all)) {
         const id = Number(key.slice(4));
@@ -171,7 +181,7 @@ export function startBackground(backend) {
   api.tabs.onRemoved.addListener((tabId) => {
     serial(tabId, async () => {
       await backend.release(tabId, await loadRecord(tabId), { closed: true });
-      await api.storage.session.remove(recordKey(tabId));
+      await sessionArea.remove(recordKey(tabId));
     });
   });
 
