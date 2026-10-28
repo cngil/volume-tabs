@@ -1,8 +1,10 @@
 name: Release
 
-# Push a tag like v1.0.0 to publish a GitHub release with both browser packages.
+# Publishes a GitHub release with both browser packages, tagged v<package.json version>.
+# Run it from the Actions tab (Run workflow), or push a matching tag such as v1.0.0.
 # The notes come from docs/releases/<tag>.md.
 on:
+  workflow_dispatch:
   push:
     tags:
       - 'v*'
@@ -18,13 +20,15 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Check tag matches package.json
+      - name: Resolve tag
         run: |
-          version="$(node -p "require('./package.json').version")"
-          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
-            echo "Tag $GITHUB_REF_NAME does not match package.json version $version" >&2
+          tag="v$(node -p "require('./package.json').version")"
+          if [ "$GITHUB_REF_TYPE" = "tag" ] && [ "$GITHUB_REF_NAME" != "$tag" ]; then
+            echo "Tag $GITHUB_REF_NAME does not match package.json ($tag)" >&2
             exit 1
           fi
+          test -f "docs/releases/$tag.md" || { echo "Missing docs/releases/$tag.md" >&2; exit 1; }
+          echo "TAG=$tag" >> "$GITHUB_ENV"
       - name: Unit tests
         run: npm test
       - name: Build and package
@@ -35,6 +39,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "$GITHUB_REF_NAME" dist/*.zip \
-            --title "Volume Tabs $GITHUB_REF_NAME" \
-            --notes-file "docs/releases/$GITHUB_REF_NAME.md"
+          gh release create "$TAG" dist/*.zip \
+            --target "$GITHUB_SHA" \
+            --title "Volume Tabs $TAG" \
+            --notes-file "docs/releases/$TAG.md"
