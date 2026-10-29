@@ -190,5 +190,8 @@
   },
   "soundMode": {
     "message": "Ses modu"
+  },
+  "levelText": {
+    "message": "yüzde $1, $2"
   }
 }

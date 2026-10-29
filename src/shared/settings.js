@@ -2,13 +2,32 @@
 // Nothing in here touches browser APIs.
 
 export const MIN_PERCENT = 0;
+const NEUTRAL_PERCENT = 100;
 export const MAX_PERCENT = 500;
 export const STEP_PERCENT = 10;
+
+// Slider scale. Loudness is heard on a log scale, so the slider is not linear:
+// 0-100% (quieter) fills the first 40% of the track, and above 100% every equal
+// distance adds the same number of decibels.
+export const UNITY_POSITION = 0.4;
+
+export function percentToPosition(percent) {
+  const p = clampPercent(percent);
+  if (p <= NEUTRAL_PERCENT) return (p / NEUTRAL_PERCENT) * UNITY_POSITION;
+  return UNITY_POSITION + ((1 - UNITY_POSITION) * Math.log(p / NEUTRAL_PERCENT)) / Math.log(MAX_PERCENT / NEUTRAL_PERCENT);
+}
+
+export function positionToPercent(position) {
+  const x = Math.min(1, Math.max(0, Number(position) || 0));
+  if (x <= UNITY_POSITION) return clampPercent((x / UNITY_POSITION) * NEUTRAL_PERCENT);
+  const exponent = (x - UNITY_POSITION) / (1 - UNITY_POSITION);
+  return clampPercent(NEUTRAL_PERCENT * (MAX_PERCENT / NEUTRAL_PERCENT) ** exponent);
+}
 
 // One sound mode at a time: 'default' (untouched), 'voice' or 'bass'.
 export const EFFECTS = Object.freeze(['default', 'voice', 'bass']);
 
-export const NEUTRAL = Object.freeze({ percent: 100, effect: 'default' });
+export const NEUTRAL = Object.freeze({ percent: NEUTRAL_PERCENT, effect: 'default' });
 
 export function clampPercent(value) {
   const n = Number(value);

@@ -6,6 +6,8 @@ import {
   isNeutral,
   isRestrictedUrl,
   levelOf,
+  percentToPosition,
+  positionToPercent,
   sameSettings,
   sanitizeSettings,
   siteKey,
@@ -58,4 +60,31 @@ test('levelOf', () => {
   assert.equal(levelOf(100), 'normal');
   assert.equal(levelOf(250), 'boost');
   assert.equal(levelOf(500), 'high');
+});
+
+test('slider scale: 100% at 40% of the track, ends at 0 and 500', () => {
+  assert.equal(percentToPosition(0), 0);
+  assert.equal(percentToPosition(100), 0.4);
+  assert.equal(percentToPosition(500), 1);
+  assert.equal(positionToPercent(0), 0);
+  assert.equal(positionToPercent(0.4), 100);
+  assert.equal(positionToPercent(1), 500);
+  assert.equal(positionToPercent(-1), 0);
+  assert.equal(positionToPercent(2), 500);
+});
+
+test('slider scale: every whole percent survives a round trip and order is kept', () => {
+  for (let p = 0; p <= 500; p++) assert.equal(positionToPercent(percentToPosition(p)), p);
+  let previous = -1;
+  for (let i = 0; i <= 1000; i++) {
+    const p = positionToPercent(i / 1000);
+    assert.ok(p >= previous);
+    previous = p;
+  }
+});
+
+test('slider scale: equal distance above 100% adds equal loudness', () => {
+  const db = (p) => 20 * Math.log10(p / 100);
+  const step = (a, b) => db(positionToPercent(b)) - db(positionToPercent(a));
+  assert.ok(Math.abs(step(0.5, 0.6) - step(0.8, 0.9)) < 0.2);
 });

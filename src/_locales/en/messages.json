@@ -191,5 +191,8 @@
   },
   "soundMode": {
     "message": "Sound mode"
+  },
+  "levelText": {
+    "message": "$1 percent, $2"
   }
 }

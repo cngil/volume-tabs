@@ -2,10 +2,13 @@ import { api, BROWSER, FEATURES } from '../shared/api.js';
 import {
   MAX_PERCENT,
   NEUTRAL,
+  UNITY_POSITION,
   clampPercent,
   isNeutral,
   isRestrictedUrl,
   levelOf,
+  percentToPosition,
+  positionToPercent,
   sameSettings,
   sanitizeSettings,
   siteKey,
@@ -14,6 +17,10 @@ import { clearSites, getPrefs, getSite, rememberSite, setPrefs } from '../shared
 
 const SOURCE_URL = 'https://github.com/cngil/volume-tabs';
 const SEND_INTERVAL = 40; // ms between live updates while dragging
+const SLIDER_STEPS = 1000; // the range input works in track positions, not percent
+const SNAP = 0.015; // while dragging, this close to 100% (as a share of the track) snaps to it
+const TICKS = [0, 50, 100, 150, 200, 300, 500];
+const WHEEL_NOTCH = 40; // px of smooth (trackpad) scrolling per wheel step
 const ALL_SITES = { origins: ['<all_urls>'] };
 
 const $ = (id) => document.getElementById(id);
@@ -138,8 +145,10 @@ function render() {
 
   document.body.dataset.level = level;
   document.body.classList.toggle('muted', percent === 0);
-  ui.slider.value = String(percent);
-  ui.slider.style.setProperty('--pos', `${(percent / MAX_PERCENT) * 100}%`);
+  const position = percentToPosition(percent);
+  ui.slider.value = String(Math.round(position * SLIDER_STEPS));
+  ui.slider.style.setProperty('--pos', `${position * 100}%`);
+  ui.slider.setAttribute('aria-valuetext', t('levelText', [String(percent), t(EFFECT_LABELS[settings.effect])]));
   if (document.activeElement !== ui.input) ui.input.value = String(percent);
   fitReadout();
   ui.mute.title = t(percent === 0 ? 'unmute' : 'mute');
@@ -426,9 +435,77 @@ function wireSettings() {
 
 // ---------------------------------------------------------------- controls
 
+const EFFECT_LABELS = { default: 'effectDefault', voice: 'voice', bass: 'bass' };
+
+// Tick labels sit where their level falls on the (non-linear) track.
+function buildTicks() {
+  $('ticks').replaceChildren(
+    ...TICKS.map((percent) => {
+      const tick = document.createElement('span');
+      tick.textContent = String(percent);
+      tick.style.left = `${percentToPosition(percent) * 100}%`;
+      if (percent === NEUTRAL.percent) tick.className = 'unity';
+      return tick;
+    }),
+  );
+}
+
+// Turns wheel and trackpad scrolling into whole steps. A mouse notch is one step;
+// smooth scrolling is added up so a trackpad swipe moves a few steps, not dozens.
+// Shift+wheel arrives as horizontal scrolling on Windows and macOS, so both axes count.
+let wheelTotal = 0;
+let wheelIdle = null;
+function wheelSteps(e) {
+  const raw = Math.abs(e.deltaY) >= Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
+  if (!raw) return 0;
+  clearTimeout(wheelIdle);
+  wheelIdle = setTimeout(() => (wheelTotal = 0), 200);
+  if (e.deltaMode !== WheelEvent.DOM_DELTA_PIXEL || Math.abs(raw) >= 50) {
+    wheelTotal = 0;
+    return -Math.sign(raw);
+  }
+  if (Math.sign(raw) !== Math.sign(wheelTotal)) wheelTotal = 0;
+  wheelTotal += raw;
+  const steps = Math.trunc(wheelTotal / WHEEL_NOTCH);
+  wheelTotal -= steps * WHEEL_NOTCH;
+  return -steps;
+}
+
 function wireControls() {
-  ui.slider.addEventListener('input', () => change({ percent: Number(ui.slider.value) }, { live: true }));
-  ui.slider.addEventListener('change', () => change({ percent: Number(ui.slider.value) }));
+  buildTicks();
+
+  // Dragging snaps to 100% near it, so "normal" is easy to find again.
+  let dragging = false;
+  ui.slider.addEventListener('pointerdown', () => (dragging = true));
+  window.addEventListener('pointerup', () => (dragging = false));
+  window.addEventListener('pointercancel', () => (dragging = false));
+  const sliderPercent = () => {
+    const position = Number(ui.slider.value) / SLIDER_STEPS;
+    return dragging && Math.abs(position - UNITY_POSITION) <= SNAP ? NEUTRAL.percent : positionToPercent(position);
+  };
+  ui.slider.addEventListener('input', () => change({ percent: sliderPercent() }, { live: true }));
+  // Commit what the last input event set (pointerup may already have ended the drag).
+  ui.slider.addEventListener('change', () => change({}));
+  ui.slider.addEventListener('dblclick', () => change({ percent: NEUTRAL.percent }));
+
+  // Keys move in percent, not track positions: arrows 1% (Shift 10%), Page keys 10%, Home/End to the ends.
+  ui.slider.addEventListener('keydown', (e) => {
+    const current = state.settings.percent;
+    const step = e.shiftKey ? 10 : 1;
+    const next = {
+      ArrowUp: current + step,
+      ArrowRight: current + step,
+      ArrowDown: current - step,
+      ArrowLeft: current - step,
+      PageUp: current + 10,
+      PageDown: current - 10,
+      Home: 0,
+      End: MAX_PERCENT,
+    }[e.key];
+    if (next === undefined) return;
+    e.preventDefault();
+    change({ percent: next });
+  });
 
   ui.input.addEventListener('focus', () => ui.input.select());
   ui.input.addEventListener('input', () => {
@@ -453,14 +530,15 @@ function wireControls() {
     fitReadout();
   });
 
-  // Mouse wheel anywhere on the card: 5% steps, 1% with Shift.
+  // Mouse wheel or trackpad anywhere on the card: 5% steps, 1% with Shift.
   $('control-card').addEventListener(
     'wheel',
     (e) => {
-      if (state.restricted || !e.deltaY) return;
+      if (state.restricted) return;
       e.preventDefault();
-      const step = e.shiftKey ? 1 : 5;
-      change({ percent: state.settings.percent + (e.deltaY < 0 ? step : -step) }, { live: true });
+      const steps = wheelSteps(e);
+      if (!steps) return;
+      change({ percent: state.settings.percent + steps * (e.shiftKey ? 1 : 5) }, { live: true });
       clearTimeout(wireControls.wheelEnd);
       wireControls.wheelEnd = setTimeout(remember, 400);
     },
