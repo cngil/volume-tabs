@@ -31,7 +31,8 @@
 
 ## Features
 
-- **0% to 500% volume per tab**, in 1% steps: slider, mouse wheel (hold Shift for 1% steps), arrow keys, or type the number.
+- **0% to 500% volume per tab**, in 1% steps: slider, mouse wheel or trackpad (hold Shift for 1% steps), arrow keys, or type the number.
+- **A slider that follows your ears:** above 100% every equal move sounds like the same step louder, it snaps to 100% as you pass it, and a double-click returns to 100%. Big jumps up fade in instead of blasting.
 - **Sound modes:** *Default* leaves the sound untouched, *Voice* makes dialogue and podcasts clearer, *Bass* fills out music.
 - **Playing tabs:** every tab that is playing audio, with its level. Click one to jump to it.
 - **Per-site memory:** remembers the level you used on each site. *Restore* brings it back, *Reset* returns to 100%.
@@ -135,10 +136,10 @@ Safari support is new and has not been tested on a Mac yet. If something does no
 Audio is processed with the browser's built-in [Web Audio API](https://developer.mozilla.org/docs/Web/API/Web_Audio_API):
 
 ```text
-tab audio -> gain (0-500%) -> bass shelf -> voice filters -> speakers
+tab audio -> gain (0-500%) -> bass shelf -> voice filters -> ceiling -> speakers
 ```
 
-The filters stay flat in Default mode. There are two ways to get at the audio:
+The filters stay flat in Default mode. The ceiling only works above 100%, and only on peaks that would otherwise clip, so boosted audio does not distort; at 100% or below the sound is untouched. There are two ways to get at the audio:
 
 1. **Page audio** (all browsers): the page's own `<audio>` and `<video>` elements are routed through the chain, so fullscreen and everything else keep working. DRM-protected media and cross-origin media without CORS would turn silent if routed, so those are left untouched.
 2. **Tab capture** (Chrome only): `chrome.tabCapture` captures the whole tab's audio and processes it in a hidden offscreen document. It works on every site, but Chrome keeps fullscreen video inside the window while a tab is captured. Capture stops on its own a few seconds after the level returns to 100%.
