@@ -32,7 +32,7 @@
 ## Features
 
 - **0% to 500% volume per tab**, in 1% steps: slider, mouse wheel or trackpad (hold Shift for 1% steps), arrow keys, or type the number.
-- **A slider that follows your ears:** above 100% every equal move sounds like the same step louder, it snaps to 100% as you pass it, and a double-click returns to 100%. Big jumps up fade in instead of blasting.
+- **A slider that follows your ears:** above 100% every equal move sounds like the same step louder, it snaps to 100% as you pass it (and gently to 200% and 300%; hold Shift to drag freely), and a double-click returns to 100%. Big jumps up fade in instead of blasting.
 - **Sound modes:** *Default* leaves the sound untouched, *Voice* makes dialogue and podcasts clearer, *Bass* fills out music.
 - **Playing tabs:** every tab that is playing audio, with its level. Click one to jump to it.
 - **Per-site memory:** remembers the level you used on each site. *Restore* brings it back, *Reset* returns to 100%.

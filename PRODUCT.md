@@ -29,7 +29,7 @@ An open-source, dependency-free alternative to closed volume boosters: no data c
 
 - Volume 0 to 500% in 1% steps; presets 50 to 500; mute; reset; per-site restore (stored locally).
 - Sound mode, one at a time: Default (untouched), Voice, Bass. No limiter option; an inaudible safety ceiling catches clipping peaks above 100% only.
-- Slider: loudness scale (100% at 40% of the track, equal decibels per distance above it), snap to 100% while dragging, double-click resets, keyboard steps in percent, wheel and trackpad scrolling in whole steps; big jumps up fade in over about a quarter second.
+- Slider: loudness scale (100% at 40% of the track, equal decibels per distance above it), snap to 100% (gently to 200% and 300%, Shift to drag freely) while dragging, double-click resets, keyboard steps in percent, wheel and trackpad scrolling in whole steps; big jumps up fade in over about a quarter second.
 - Engines: page audio (all browsers) and tab capture (Chrome only). Safari is built from source and signed by each user; it has no tab capture. Some media (DRM, cross-origin without CORS) cannot use the page engine; Chrome falls back to capture, Firefox cannot boost it.
 - Settings: light/dark theme, engine choice (Chrome), per-site memory, optional all-sites access (Firefox), shortcuts.
 - UI is localized in English and Turkish.
