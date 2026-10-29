@@ -17,6 +17,21 @@ export function percentToPosition(percent) {
   return UNITY_POSITION + ((1 - UNITY_POSITION) * Math.log(p / NEUTRAL_PERCENT)) / Math.log(MAX_PERCENT / NEUTRAL_PERCENT);
 }
 
+// Levels the slider snaps to while dragging, with how close (as a share of the
+// track) the thumb has to be. 100% pulls hardest; 200% and 300% pull gently, so
+// nearby values stay reachable.
+export const SNAP_POINTS = Object.freeze([
+  Object.freeze({ percent: 100, zone: 0.015 }),
+  Object.freeze({ percent: 200, zone: 0.0075 }),
+  Object.freeze({ percent: 300, zone: 0.0075 }),
+]);
+
+// The level a dragged slider position snaps to, or null when it is not near one.
+export function snapPercent(position) {
+  const hit = SNAP_POINTS.find(({ percent, zone }) => Math.abs(position - percentToPosition(percent)) <= zone);
+  return hit ? hit.percent : null;
+}
+
 export function positionToPercent(position) {
   const x = Math.min(1, Math.max(0, Number(position) || 0));
   if (x <= UNITY_POSITION) return clampPercent((x / UNITY_POSITION) * NEUTRAL_PERCENT);

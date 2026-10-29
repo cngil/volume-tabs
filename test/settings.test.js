@@ -10,6 +10,7 @@ import {
   positionToPercent,
   sameSettings,
   sanitizeSettings,
+  snapPercent,
   siteKey,
 } from '../src/shared/settings.js';
 
@@ -87,4 +88,19 @@ test('slider scale: equal distance above 100% adds equal loudness', () => {
   const db = (p) => 20 * Math.log10(p / 100);
   const step = (a, b) => db(positionToPercent(b)) - db(positionToPercent(a));
   assert.ok(Math.abs(step(0.5, 0.6) - step(0.8, 0.9)) < 0.2);
+});
+
+test('snapping: strong at 100%, gentle at 200% and 300%, nothing elsewhere', () => {
+  const near = (percent) => {
+    const hits = [];
+    for (let p = percent - 20; p <= percent + 20; p++) if (snapPercent(percentToPosition(p)) === percent) hits.push(p);
+    return [hits[0], hits[hits.length - 1]];
+  };
+  const [low100, high100] = near(100);
+  const [low300, high300] = near(300);
+  const [low200, high200] = near(200);
+  assert.ok(low100 <= 97 && high100 >= 103, `100 zone ${low100}-${high100}`);
+  assert.ok(high300 - low300 <= 14 && low300 > 290 && high300 < 310, `300 zone ${low300}-${high300}`);
+  assert.ok(high200 - low200 <= 10, `200 zone ${low200}-${high200}`);
+  for (const p of [50, 150, 250, 400, 450]) assert.equal(snapPercent(percentToPosition(p)), null, `${p} must not snap`);
 });

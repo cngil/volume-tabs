@@ -2,7 +2,6 @@ import { api, BROWSER, FEATURES } from '../shared/api.js';
 import {
   MAX_PERCENT,
   NEUTRAL,
-  UNITY_POSITION,
   clampPercent,
   isNeutral,
   isRestrictedUrl,
@@ -10,6 +9,7 @@ import {
   percentToPosition,
   positionToPercent,
   sameSettings,
+  snapPercent,
   sanitizeSettings,
   siteKey,
 } from '../shared/settings.js';
@@ -18,7 +18,6 @@ import { clearSites, getPrefs, getSite, rememberSite, setPrefs } from '../shared
 const SOURCE_URL = 'https://github.com/cngil/volume-tabs';
 const SEND_INTERVAL = 40; // ms between live updates while dragging
 const SLIDER_STEPS = 1000; // the range input works in track positions, not percent
-const SNAP = 0.015; // while dragging, this close to 100% (as a share of the track) snaps to it
 const TICKS = [0, 50, 100, 150, 200, 300, 500];
 const WHEEL_NOTCH = 40; // px of smooth (trackpad) scrolling per wheel step
 const ALL_SITES = { origins: ['<all_urls>'] };
@@ -450,6 +449,15 @@ function buildTicks() {
   );
 }
 
+// Highlights the label of the level the slider snapped to; null clears it.
+// The highlight fades shortly after the thumb settles.
+let flashTimer = null;
+function flashTick(percent) {
+  for (const tick of $('ticks').children) tick.classList.toggle('snapped', Number(tick.textContent) === percent);
+  clearTimeout(flashTimer);
+  if (percent !== null) flashTimer = setTimeout(() => flashTick(null), 600);
+}
+
 // Turns wheel and trackpad scrolling into whole steps. A mouse notch is one step;
 // smooth scrolling is added up so a trackpad swipe moves a few steps, not dozens.
 // Shift+wheel arrives as horizontal scrolling on Windows and macOS, so both axes count.
@@ -474,14 +482,22 @@ function wheelSteps(e) {
 function wireControls() {
   buildTicks();
 
-  // Dragging snaps to 100% near it, so "normal" is easy to find again.
+  // Dragging snaps to 100% (and gently to 200% and 300%), so common levels are easy
+  // to hit. Holding Shift while dragging turns snapping off for fine control.
   let dragging = false;
-  ui.slider.addEventListener('pointerdown', () => (dragging = true));
+  let fine = false;
+  ui.slider.addEventListener('pointerdown', (e) => {
+    dragging = true;
+    fine = e.shiftKey;
+  });
+  window.addEventListener('pointermove', (e) => (fine = e.shiftKey));
   window.addEventListener('pointerup', () => (dragging = false));
   window.addEventListener('pointercancel', () => (dragging = false));
   const sliderPercent = () => {
     const position = Number(ui.slider.value) / SLIDER_STEPS;
-    return dragging && Math.abs(position - UNITY_POSITION) <= SNAP ? NEUTRAL.percent : positionToPercent(position);
+    const snapped = dragging && !fine ? snapPercent(position) : null;
+    flashTick(snapped);
+    return snapped ?? positionToPercent(position);
   };
   ui.slider.addEventListener('input', () => change({ percent: sliderPercent() }, { live: true }));
   // Commit what the last input event set (pointerup may already have ended the drag).

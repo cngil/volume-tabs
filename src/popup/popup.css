@@ -481,12 +481,18 @@ body[data-level='high'] #percent-input {
   position: absolute;
   top: 0;
   transform: translateX(-50%);
+  transition: color 150ms ease-out;
 }
 
 /* 100% is "normal": a darker label with a small mark above it. */
 .ticks .unity {
   color: var(--text);
   font-weight: 600;
+}
+
+.ticks .snapped {
+  color: var(--accent-text);
+  font-weight: 650;
 }
 
 .ticks .unity::before {
